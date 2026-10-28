@@ -9,3 +9,4 @@ vendor/
 /docs/_site/
 /docs/.jekyll-metadata
 
+.archify/

@@ -1,5 +1,9 @@
 <div align="center">
 
+<p align="center">
+  <img src="./media/img/muraena_logo.png" alt="Muraena Logo" width="220" />
+</p>
+
 # 🐟 Muraena — Enhanced Edition
 
 **The industrial-grade phishing-simulation & session-awareness framework — rebuilt, hardened, and battle-tested for Office 365 engagements.**
@@ -9,7 +13,7 @@
 ![Platform](https://img.shields.io/badge/platform-linux%20amd64-lightgrey)
 ![License](https://img.shields.io/badge/license-BSD--3-green)
 
-**Fork of** [muraenateam/muraena](https://github.com/muraenateam/muraena) · **Maintained by** [@officialmonsterz](https://github.com/officialmonsterz)
+**Fork of** [muraenateam/muraena](https://github.com/muraenateam/muraena) · **Repository** [tameruict/muraena](https://github.com/tameruict/muraena)
 
 </div>
 
@@ -221,27 +225,50 @@ sudo systemctl daemon-reload && sudo systemctl enable --now muraena
 
 ## 🏗️ Architecture
 
+<p align="center">
+  <img src="./media/img/muraena-architecture.png" alt="Muraena Runtime Architecture Diagram" width="100%" />
+</p>
+
+```mermaid
+flowchart LR
+    subgraph MuraenaProcess[" Muraena Process "]
+        Edge["TLS Edge<br/><code>:443 / TLS Termination</code>"]
+        Watchdog["Watchdog Gate<br/><code>IP / UA / GeoIP / Anti-Bot</code>"]
+        Rewriter["Proxy & Content Rewriter<br/><code>HTML / JS / CSS / Set-Cookie</code>"]
+        Static["Static Server<br/><code>Local Assets & Decoys</code>"]
+        Tracker["Tracker Engine<br/><code>UUID / Secrets / Creds</code>"]
+    end
+
+    Victim["Victim Browser<br/><i>Target User Session</i>"]
+    Upstream["Microsoft 365<br/><i>login.microsoftonline.com + CDNs</i>"]
+    Telegram["Telegram Bot API<br/><i>Real-time Alerts</i>"]
+    Redis[("Redis Database<br/><i>Victims / Creds / Cookie Jar</i>")]
+    Operator["Operator Console<br/><i>Interactive CLI & Export</i>"]
+    Necro["NecroBrowser<br/><i>Automated Session Replay</i>"]
+
+    Victim -->|HTTPS :443| Edge
+    Edge --> Watchdog
+    Watchdog -->|Allow| Rewriter
+    Watchdog -.->|Decoy / Static Paths| Static
+    Rewriter <-->|Proxied Traffic| Upstream
+    Rewriter -->|Tracks Secrets| Tracker
+    Tracker -->|Persist Sessions| Redis
+    Tracker -.->|Push Alerts| Telegram
+    Redis -.->|Poll & Replay| Necro
+    Operator -->|Export & Manage| Redis
 ```
-                         ┌──────────────────────────────┐
-  Victim ── HTTPS ──────►│  yourdomain.com (Muraena)    │
-                         │  ┌────────────────────────┐  │
-                         │  │ Watchdog (allow/block) │  │
-                         │  ├────────────────────────┤  │
-                         │  │ Reverse Proxy Engine   │──┼──► login.microsoftonline.com
-                         │  │  • URL rewriting       │  │      + all Microsoft CDNs
-                         │  │  • Header transforms   │  │
-                         │  │  • TLS termination     │  │
-                         │  ├────────────────────────┤  │
-                         │  │ Tracking / Secrets     │  │
-                         │  └───────────┬────────────┘  │
-                         └──────────────┼───────────────┘
-                                        │
-                             ┌──────────┴──────────┐
-                             ▼                     ▼
-                        🔴 Redis (sessions)   📱 Telegram (alerts)
-                             │
-                        🍪 Cookie-jar export → session replay
-```
+
+### 🧩 Architecture Breakdown
+
+| Component | Role | Details |
+|---|---|---|
+| **TLS Edge** | Front-end listener | Terminates TLS on port `:443` using wildcard certs (Cloudflare DNS-01). Hands all inbound requests directly to Watchdog. |
+| **Watchdog** | Anti-Bot & Threat Gate | Evaluates IP, User-Agent, and GeoIP rules (`config/watchdog.rules`). Allows legitimate targets through; routes bots, scanners, and crawlers to decoy responses. |
+| **Proxy & Rewriter** | Core Reverse Proxy | Deeply inspects and rewrites requests/responses on the fly (HTML, JS, CSS, and `Set-Cookie` headers) between victim and Microsoft 365 / CDN endpoints. |
+| **Tracker** | Session & Secret Harvester | Assigns UUIDs per victim session, matches sensitive credential patterns (usernames, passwords, MFA/TOTP, OAuth tokens), and triggers Telegram notifications. |
+| **Redis** | Central State Storage | Stores active victim state, harvested credentials, and complete cookie jars under `victim:<ID>`, `:creds:*`, and `:cookiejar:*`. |
+| **Telegram API** | Instant Alerting | 1,024-message async queue with exponential backoff and retries for zero-latency notification of captured factors. |
+| **NecroBrowser** | Headless Automation | (Optional) Automated headless Chromium instance that receives session cookies to maintain persistence or automate post-auth tasks. |
 
 **How it works, in plain terms:**
 
@@ -322,8 +349,6 @@ No — and nothing using a reverse proxy can. FIDO2 challenge-response is bound 
 <details>
 <summary><b>Does this work against real MFA?</b></summary>
 The framework captures whatever the authentication flow presents — including TOTP/OTP codes in real time, and authenticated session cookies after login. It is a transparent proxy, so any factor that flows through the browser is in scope. Hardware-bound factors (FIDO2) are not.
-</details>
-
 </details>
 
 ---
