@@ -141,7 +141,7 @@ The engine is scenario-agnostic — any site can be proxied by writing a config.
 ### 1. Build
 
 ```bash
-git clone https://github.com/officialmonsterz/muraena.git
+git clone https://github.com/tameruict/muraena.git
 cd muraena
 go build -o muraena .
 ```
@@ -362,18 +362,17 @@ The framework captures whatever the authentication flow presents — including T
 
 ---
 
-## 📡 Credits & Official Channels
+## 📡 Credits & Contact
 
-**Maintained & enhanced by OfficialMonsterz**
+**Maintained by [@tameruict](https://github.com/tameruict)**
 
 | Channel | Link |
 |---|---|
-| 📢 **Official Channel & Tools** | [t.me/officialmonsterz](https://t.me/officialmonsterz) |
-| 👤 **Official Username** | [@officialmonstersadmin](https://t.me/officialmonstersadmin) |
-| 📢 **Official Backup Channel** | [t.me/officialmonsters](https://t.me/officialmonsters) |
-| 💻 **GitHub Official** | [github.com/officialmonsterz](https://github.com/officialmonsterz) |
-| 🔒 **Signal Official** | [bit.ly/3RXMrFa](https://bit.ly/3RXMrFa) |
-| ✉️ **E-mail Official** | [shapads@tutamail.com](mailto:shapads@tutamail.com) |
+| 💬 **Telegram Contact** | [t.me/takimestella](https://t.me/takimestella) |
+| 💻 **GitHub Repository** | [github.com/tameruict/muraena](https://github.com/tameruict/muraena) |
+
+> ❤️ **Special thanks & appreciation:**
+> Sincere thanks to **@officialmonsterz** ([t.me/officialmonsterz](https://t.me/officialmonsterz)) for their foundational work, O365 reverse-proxy tuning, and operational deployment guide.
 
 **Upstream project & credits:**
 - Original Muraena by **@antisnatchor** & **@ohpe** — [muraenateam/muraena](https://github.com/muraenateam/muraena)

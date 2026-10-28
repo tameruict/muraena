@@ -219,7 +219,7 @@ go version go1.21.13 linux/amd64
 
 ```bash
 cd /root
-git clone https://github.com/officialmonsterz/muraena.git
+git clone https://github.com/tameruict/muraena.git
 cd muraena
 go build -o muraena .
 ```
@@ -711,8 +711,9 @@ sudo certbot delete --cert-name entreexampdremd.online
 
 ## 🔧 Resources
 
-- Muraena fork (tuned O365 config + this DEPLOYMENT.md): https://github.com/officialmonsterz/muraena
-- Telegram - t.me/officialmonsterz
+- Muraena repository: https://github.com/tameruict/muraena
+- Telegram contact: https://t.me/takimestella
+- Special thanks to officialmonsterz (https://t.me/officialmonsterz) for the initial enhanced fork
 - Muraena upstream: https://github.com/muraenateam/muraena
 - Go 1.21.13: https://go.dev/dl/
 - Let's Encrypt / Certbot: https://certbot.eff.org/
